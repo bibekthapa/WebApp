@@ -5,10 +5,17 @@
  */
 package com.example.WebProject.dao;
 
+import com.example.WebProject.entity.Course;
+import java.sql.SQLException;
+import java.util.List;
+
 /**
  *
  * @author HOME
  */
-public class CourseDao {
+public interface CourseDao {
+    
+    List<Course> getAll()throws ClassNotFoundException,SQLException;
+    
     
 }
