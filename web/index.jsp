@@ -2,6 +2,9 @@
 
 
 
+
+<%@page import="com.example.WebProject.util.DbConnection"%>
+<%@page import="java.sql.SQLException"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="java.sql.PreparedStatement"%>
 <%@page import="java.sql.DriverManager"%>
@@ -10,48 +13,64 @@
 <%@page import="com.example.WebProject.dao.CourseDao"%>
 <%@page import="com.example.WebProject.entity.Course"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Page</title>
-    </head>
-   
-    
-    <body>
+<%@include file="header.jsp" %>
+
+            <div class="pull-right">
+                <p>
+                    <a href="addcourse.jsp" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span></a>
+                </p>
+            </div>
+        <% try{ %>
         
-        <table>
+       
+        
+        <table class="table table-bordered table-striped table-hover">
             <tr>
                 <th>Id</th>
                 <th>Name</th>
                 <th>Description</th>
                 <th>Fees</th>
                 <th>Status</th>
+                <th>Action</th>
             </tr>
             <% 
-               Class.forName("com.mysql.jdbc.Driver");
-               Connection conn=DriverManager.getConnection("jdbc:mysql://localhost:3306/course", "root", null);
-               String sql="SELECT * FROM courses";
-               PreparedStatement stmt=conn.prepareStatement(sql);
-               ResultSet rs=stmt.executeQuery();
-               while(rs.next()){
+                CourseDao coursedao=new CourseDaoImpl();
+                
+                for(Course c: coursedao.getAll()){
+               
+             
             
             %>
-            <tr>
-                <td><%out.println(rs.getInt("course_id")); %></td>
-                 <td><%out.println(rs.getString("course_name")); %></td>
-                  <td><%out.println(rs.getString("course_description")); %></td>
-                   <td><%out.println(rs.getDouble("course_fees")); %></td>
-                    <td><%out.println(rs.getBoolean("course_status")); %></td>
+           
+            <tr class="<%out.println((!c.getStatus())?"danger":"");%>">
+                <td><%=c.getId()%></td>
+                 <td><%out.println(c.getName());%></td>
+                  <td><%out.println(c.getDescription());%></td>
+                   <td><%out.println(c.getFees());%></td>
+                    <td><%out.println(c.getStatus());%></td>
+                    <td>
+                        <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-pencil"></span></button>    
+                    <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-trash"></span></button>    
+                    </td>
                 
                 
                 
-                <%}%> 
+                <%}
+                
+                %> 
             </tr>
                   
             
         </table>
-                   
-    </body>
-   
-</html>
+                <%}catch(ClassNotFoundException ioe)
+{
+    out.println(ioe.getMessage());
+
+        } 
+catch(SQLException e)
+{
+   out.println(e.getMessage());
+}
+%>
+    
+<%@include file="footer.jsp" %>
